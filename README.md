@@ -63,9 +63,15 @@ curl -X PATCH http://localhost:3000/flags/new-checkout \
 
 Errors return JSON with an `error` message and an appropriate HTTP status: `400` for invalid input, `404` for missing flags/routes, and `409` for duplicate keys. Request bodies are limited to 32 KB.
 
-## Design notes
+## Assumptions and tradeoffs
 
 - `src/flags.ts` contains the flag model, validation, in-memory storage, and evaluation logic.
 - `src/server.ts` maps HTTP requests to the manager and formats responses.
+- The project is API-first because the interview role is focused on backend development; `curl` examples make each user action directly exercisable.
+- A flag is off by default. When enabled, explicit `userIds` are included first; remaining users are evaluated against the percentage rollout.
 - The stable hash keeps rollout membership consistent across server restarts. It is a simple percentage rollout, not a cryptographic access-control mechanism.
 - Persistence, authentication, per-environment configuration, and a UI are intentionally omitted to keep the exercise focused and explainable within a 60-minute interview.
+
+## With another day
+
+I would add persistent storage with a small repository interface, tests for validation and rollout boundary cases, and per-environment flag values. I would also add request IDs and structured logs, then consider an accessible UI if the project needed non-technical users to manage flags directly.
